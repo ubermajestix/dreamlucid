@@ -1,6 +1,6 @@
 # DreamLucid Rack Synth v2.0
 
-A browser-based polyphonic synthesizer styled after 1990s rack-mounted hardware synths. Built entirely with the Web Audio API — no dependencies, no build step. Just open `index.html` and play.
+[A browser-based polyphonic synthesizer](https://ubermajestix.com/dreamlucid/) styled after 1990s rack-mounted hardware synths. Built entirely with the Web Audio API — no dependencies, no build step. Just open `index.html` and play.
 
 ![DreamLucid Rack Synth](docs/screenshot.png)
 
