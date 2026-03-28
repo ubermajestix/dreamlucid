@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DreamLucid Rack Synth</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<input type="file" id="preset-file-input" accept=".json">
+<div id="rack">
+  <div id="rack-rails-left" class="rack-rail"></div>
+  <div id="rack-rails-right" class="rack-rail"></div>
+  <div id="rack-content">
+    <!-- Global Controls -->
+    <div id="global-controls" class="rack-unit global">
+      <div class="rack-screws">
+        <div class="screw"></div>
+        <div class="screw"></div>
+      </div>
+      <div class="rack-panel">
+        <div class="brand-header">
+          <span class="brand-name">DREAMLUCID</span>
+          <span class="model-name">RACK SYNTH v2.0</span>
+          <span class="sub-label">DIGITAL POLYPHONIC SYNTHESIZER</span>
+        </div>
+        <div class="controls-row">
+          <!-- Master Volume -->
+          <div class="control-group master-vol">
+            <label>MASTER</label>
+            <div class="rotary-knob" data-param="master-volume">
+              <input type="range" id="master-volume" min="0" max="1" step="0.01" value="0.5">
+            </div>
+            <div class="led-display" id="master-vol-display">0.50</div>
+          </div>
+          <!-- Global Filter -->
+          <div class="control-group">
+            <div class="section-label">GLOBAL FILTER</div>
+            <div class="knob-row">
+              <div class="knob-group">
+                <label>CUTOFF</label>
+                <div class="rotary-knob" data-param="global-filter-cutoff">
+                  <input type="range" id="global-filter-cutoff" min="0" max="1" step="0.001" value="1">
+                </div>
+                <div class="led-display" id="global-cutoff-display">20.0k</div>
+              </div>
+              <div class="knob-group">
+                <label>RESONANCE</label>
+                <div class="rotary-knob" data-param="global-filter-res">
+                  <input type="range" id="global-filter-res" min="0" max="30" step="0.1" value="0">
+                </div>
+                <div class="led-display" id="global-res-display">0.0</div>
+              </div>
+            </div>
+          </div>
+          <!-- Global Reverb -->
+          <div class="control-group reverb-section">
+            <div class="section-label">REVERB ENGINE</div>
+            <div class="knob-row">
+              <div class="knob-group">
+                <label>ALGORITHM</label>
+                <select id="reverb-algorithm" class="lcd-select">
+                  <option value="room">ROOM</option>
+                  <option value="hall" selected>HALL</option>
+                  <option value="plate">PLATE</option>
+                  <option value="spring">SPRING</option>
+                  <option value="shimmer">SHIMMER</option>
+                  <option value="cloud">CLOUD</option>
+                  <option value="bloom">BLOOM</option>
+                </select>
+              </div>
+              <div class="knob-group">
+                <label>DECAY</label>
+                <div class="rotary-knob" data-param="reverb-decay">
+                  <input type="range" id="reverb-decay" min="0.1" max="15" step="0.1" value="3">
+                </div>
+                <div class="led-display" id="reverb-decay-display">3.0s</div>
+              </div>
+              <div class="knob-group">
+                <label>DAMPING</label>
+                <div class="rotary-knob" data-param="reverb-damping">
+                  <input type="range" id="reverb-damping" min="0" max="1" step="0.01" value="0.5">
+                </div>
+                <div class="led-display" id="reverb-damp-display">0.50</div>
+              </div>
+              <div class="knob-group">
+                <label>PRE-DLY</label>
+                <div class="rotary-knob" data-param="reverb-predelay">
+                  <input type="range" id="reverb-predelay" min="0" max="200" step="1" value="20">
+                </div>
+                <div class="led-display" id="reverb-predelay-display">20ms</div>
+              </div>
+              <div class="knob-group">
+                <label>MIX</label>
+                <div class="rotary-knob" data-param="reverb-mix">
+                  <input type="range" id="reverb-mix" min="0" max="1" step="0.01" value="0.3">
+                </div>
+                <div class="led-display" id="reverb-mix-display">0.30</div>
+              </div>
+              <div class="knob-group">
+                <label>MOD</label>
+                <div class="rotary-knob" data-param="reverb-mod">
+                  <input type="range" id="reverb-mod" min="0" max="1" step="0.01" value="0.2">
+                </div>
+                <div class="led-display" id="reverb-mod-display">0.20</div>
+              </div>
+            </div>
+          </div>
+          <!-- Transport / Preset -->
+          <div class="control-group transport">
+            <div class="section-label">TRANSPORT</div>
+            <div class="button-row">
+              <button id="btn-record" class="rack-btn record-btn">&#9210; REC</button>
+              <button id="btn-stop-record" class="rack-btn stop-btn" disabled>&#9209; STOP</button>
+              <div class="rec-indicator" id="rec-indicator"></div>
+            </div>
+            <div class="button-row">
+              <button id="btn-save-preset" class="rack-btn preset-btn">SAVE</button>
+              <button id="btn-load-preset" class="rack-btn preset-btn">LOAD</button>
+            </div>
+            <button id="btn-add-module" class="rack-btn add-btn">+ ADD MODULE</button>
+          </div>
+        </div>
+      </div>
+      <div class="rack-screws right">
+        <div class="screw"></div>
+        <div class="screw"></div>
+      </div>
+    </div>
+    <!-- Modules Container -->
+    <div id="modules-container"></div>
+  </div>
+</div>
+
+<template id="module-template">
+  <div class="rack-unit module" data-module-id="">
+    <div class="rack-screws">
+      <div class="screw"></div>
+      <div class="screw"></div>
+    </div>
+    <div class="rack-panel">
+      <div class="module-header">
+        <span class="module-title">MODULE <span class="module-num"></span></span>
+        <div class="module-lcd"><span class="lcd-text">READY</span></div>
+        <div class="power-section">
+          <button class="rack-btn power-btn module-power" title="Power On/Off">PWR</button>
+          <button class="rack-btn remove-btn module-remove" title="Remove Module">&#10005;</button>
+        </div>
+      </div>
+      <div class="module-body">
+        <!-- Scale / Mode / Chord / Octave -->
+        <div class="control-group scale-section">
+          <div class="section-label">SCALE / MODE / CHORD</div>
+          <div class="knob-row">
+            <div class="knob-group">
+              <label>ROOT</label>
+              <select class="lcd-select root-select">
+                <option value="0">C</option>
+                <option value="1">C#</option>
+                <option value="2">D</option>
+                <option value="3">D#</option>
+                <option value="4">E</option>
+                <option value="5">F</option>
+                <option value="6">F#</option>
+                <option value="7">G</option>
+                <option value="8">G#</option>
+                <option value="9">A</option>
+                <option value="10">A#</option>
+                <option value="11">B</option>
+              </select>
+            </div>
+            <div class="knob-group">
+              <label>OCTAVE</label>
+              <select class="lcd-select octave-select">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4" selected>4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+              </select>
+            </div>
+            <div class="knob-group">
+              <label>SCALE</label>
+              <select class="lcd-select scale-select">
+                <option value="chromatic">CHROMATIC</option>
+                <option value="major" selected>MAJOR</option>
+                <option value="minor">MINOR</option>
+                <option value="harmonicMinor">HARM MINOR</option>
+                <option value="melodicMinor">MEL MINOR</option>
+                <option value="dorian">DORIAN</option>
+                <option value="phrygian">PHRYGIAN</option>
+                <option value="lydian">LYDIAN</option>
+                <option value="mixolydian">MIXOLYDIAN</option>
+                <option value="locrian">LOCRIAN</option>
+                <option value="wholeTone">WHOLE TONE</option>
+                <option value="blues">BLUES</option>
+                <option value="pentatonicMaj">PENTA MAJ</option>
+                <option value="pentatonicMin">PENTA MIN</option>
+                <option value="hungarian">HUNGARIAN</option>
+                <option value="japanese">JAPANESE</option>
+              </select>
+            </div>
+            <div class="knob-group">
+              <label>CHORD</label>
+              <button class="rack-btn chord-btn">NONE</button>
+            </div>
+            <div class="knob-group">
+              <label>OCT SHIFT</label>
+              <div class="oct-shift-group">
+                <button class="rack-btn oct-shift-btn oct-down">-</button>
+                <div class="led-display oct-shift-display">0</div>
+                <button class="rack-btn oct-shift-btn oct-up">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Oscillators -->
+        <div class="control-group osc-section">
+          <div class="section-label">OSCILLATORS</div>
+          <div class="osc-grid">
+            <!-- OSC 1 -->
+            <div class="osc-channel" data-osc="0">
+              <div class="osc-label">OSC 1</div>
+              <div class="osc-knobs-row">
+                <div class="knob-group">
+                  <label>PITCH</label>
+                  <div class="rotary-knob small"><input type="range" min="-24" max="24" step="1" value="0" class="osc-pitch"></div>
+                  <div class="led-display osc-pitch-display">0</div>
+                </div>
+                <div class="knob-group">
+                  <label>FINE</label>
+                  <div class="rotary-knob small"><input type="range" min="-50" max="50" step="1" value="0" class="osc-fine"></div>
+                </div>
+                <div class="knob-group">
+                  <label>LEVEL</label>
+                  <div class="rotary-knob small"><input type="range" min="0" max="1" step="0.01" value="0.7" class="osc-level"></div>
+                </div>
+              </div>
+              <div class="knob-group">
+                <label>WAVE</label>
+                <select class="lcd-select osc-wave">
+                  <option value="sine">SIN</option>
+                  <option value="sawtooth" selected>SAW</option>
+                  <option value="square">SQR</option>
+                  <option value="triangle">TRI</option>
+                </select>
+              </div>
+              <div class="osc-knobs-row">
+                <div class="knob-group">
+                  <label>PAN</label>
+                  <div class="rotary-knob small"><input type="range" min="-1" max="1" step="0.01" value="0" class="osc-pan"></div>
+                  <div class="led-display osc-pan-display">C</div>
+                </div>
+                <div class="knob-group">
+                  <label>L-RATE</label>
+                  <div class="rotary-knob small"><input type="range" min="0.1" max="20" step="0.1" value="4" class="osc-lfo-rate"></div>
+                </div>
+                <div class="knob-group">
+                  <label>L-DPTH</label>
+                  <div class="rotary-knob small"><input type="range" min="0" max="1" step="0.01" value="0" class="osc-lfo-depth"></div>
+                </div>
+              </div>
+            </div>
+            <!-- OSC 2 -->
+            <div class="osc-channel" data-osc="1">
+              <div class="osc-label">OSC 2</div>
+              <div class="osc-knobs-row">
+                <div class="knob-group">
+                  <label>PITCH</label>
+                  <div class="rotary-knob small"><input type="range" min="-24" max="24" step="1" value="0" class="osc-pitch"></div>
+                  <div class="led-display osc-pitch-display">0</div>
+                </div>
+                <div class="knob-group">
+                  <label>FINE</label>
+                  <div class="rotary-knob small"><input type="range" min="-50" max="50" step="1" value="0" class="osc-fine"></div>
+                </div>
+                <div class="knob-group">
+                  <label>LEVEL</label>
+                  <div class="rotary-knob small"><input type="range" min="0" max="1" step="0.01" value="0.7" class="osc-level"></div>
+                </div>
+              </div>
+              <div class="knob-group">
+                <label>WAVE</label>
+                <select class="lcd-select osc-wave">
+                  <option value="sine">SIN</option>
+                  <option value="sawtooth" selected>SAW</option>
+                  <option value="square">SQR</option>
+                  <option value="triangle">TRI</option>
+                </select>
+              </div>
+              <div class="osc-knobs-row">
+                <div class="knob-group">
+                  <label>PAN</label>
+                  <div class="rotary-knob small"><input type="range" min="-1" max="1" step="0.01" value="0" class="osc-pan"></div>
+                  <div class="led-display osc-pan-display">C</div>
+                </div>
+                <div class="knob-group">
+                  <label>L-RATE</label>
+                  <div class="rotary-knob small"><input type="range" min="0.1" max="20" step="0.1" value="4" class="osc-lfo-rate"></div>
+                </div>
+                <div class="knob-group">
+                  <label>L-DPTH</label>
+                  <div class="rotary-knob small"><input type="range" min="0" max="1" step="0.01" value="0" class="osc-lfo-depth"></div>
+                </div>
+              </div>
+            </div>
+            <!-- OSC 3 -->
+            <div class="osc-channel" data-osc="2">
+              <div class="osc-label">OSC 3</div>
+              <div class="osc-knobs-row">
+                <div class="knob-group">
+                  <label>PITCH</label>
+                  <div class="rotary-knob small"><input type="range" min="-24" max="24" step="1" value="0" class="osc-pitch"></div>
+                  <div class="led-display osc-pitch-display">0</div>
+                </div>
+                <div class="knob-group">
+                  <label>FINE</label>
+                  <div class="rotary-knob small"><input type="range" min="-50" max="50" step="1" value="0" class="osc-fine"></div>
+                </div>
+                <div class="knob-group">
+                  <label>LEVEL</label>
+                  <div class="rotary-knob small"><input type="range" min="0" max="1" step="0.01" value="0.7" class="osc-level"></div>
+                </div>
+              </div>
+              <div class="knob-group">
+                <label>WAVE</label>
+                <select class="lcd-select osc-wave">
+                  <option value="sine">SIN</option>
+                  <option value="sawtooth" selected>SAW</option>
+                  <option value="square">SQR</option>
+                  <option value="triangle">TRI</option>
+                </select>
+              </div>
+              <div class="osc-knobs-row">
+                <div class="knob-group">
+                  <label>PAN</label>
+                  <div class="rotary-knob small"><input type="range" min="-1" max="1" step="0.01" value="0" class="osc-pan"></div>
+                  <div class="led-display osc-pan-display">C</div>
+                </div>
+                <div class="knob-group">
+                  <label>L-RATE</label>
+                  <div class="rotary-knob small"><input type="range" min="0.1" max="20" step="0.1" value="4" class="osc-lfo-rate"></div>
+                </div>
+                <div class="knob-group">
+                  <label>L-DPTH</label>
+                  <div class="rotary-knob small"><input type="range" min="0" max="1" step="0.01" value="0" class="osc-lfo-depth"></div>
+                </div>
+              </div>
+            </div>
+            <!-- OSC 4 -->
+            <div class="osc-channel" data-osc="3">
+              <div class="osc-label">OSC 4</div>
+              <div class="osc-knobs-row">
+                <div class="knob-group">
+                  <label>PITCH</label>
+                  <div class="rotary-knob small"><input type="range" min="-24" max="24" step="1" value="0" class="osc-pitch"></div>
+                  <div class="led-display osc-pitch-display">0</div>
+                </div>
+                <div class="knob-group">
+                  <label>FINE</label>
+                  <div class="rotary-knob small"><input type="range" min="-50" max="50" step="1" value="0" class="osc-fine"></div>
+                </div>
+                <div class="knob-group">
+                  <label>LEVEL</label>
+                  <div class="rotary-knob small"><input type="range" min="0" max="1" step="0.01" value="0.7" class="osc-level"></div>
+                </div>
+              </div>
+              <div class="knob-group">
+                <label>WAVE</label>
+                <select class="lcd-select osc-wave">
+                  <option value="sine">SIN</option>
+                  <option value="sawtooth" selected>SAW</option>
+                  <option value="square">SQR</option>
+                  <option value="triangle">TRI</option>
+                </select>
+              </div>
+              <div class="osc-knobs-row">
+                <div class="knob-group">
+                  <label>PAN</label>
+                  <div class="rotary-knob small"><input type="range" min="-1" max="1" step="0.01" value="0" class="osc-pan"></div>
+                  <div class="led-display osc-pan-display">C</div>
+                </div>
+                <div class="knob-group">
+                  <label>L-RATE</label>
+                  <div class="rotary-knob small"><input type="range" min="0.1" max="20" step="0.1" value="4" class="osc-lfo-rate"></div>
+                </div>
+                <div class="knob-group">
+                  <label>L-DPTH</label>
+                  <div class="rotary-knob small"><input type="range" min="0" max="1" step="0.01" value="0" class="osc-lfo-depth"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- LFO / Filter / Pan / Reverb / Volume -->
+        <div class="control-group modulation-section">
+          <div class="controls-row-bottom">
+            <div class="sub-section">
+              <div class="section-label">VOL LFO</div>
+              <div class="knob-row">
+                <div class="knob-group">
+                  <label>RATE</label>
+                  <div class="rotary-knob small"><input type="range" min="1" max="120" step="0.5" value="4" class="lfo-rate"></div>
+                  <div class="led-display lfo-rate-display">4.0s</div>
+                </div>
+                <div class="knob-group">
+                  <label>DEPTH</label>
+                  <div class="rotary-knob small"><input type="range" min="0" max="1" step="0.01" value="0" class="lfo-depth"></div>
+                </div>
+                <div class="knob-group">
+                  <label>SHAPE</label>
+                  <select class="lcd-select lfo-wave">
+                    <option value="sine" selected>SIN</option>
+                    <option value="triangle">TRI</option>
+                    <option value="square">SQR</option>
+                    <option value="sawtooth">SAW</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="sub-section">
+              <div class="section-label">LADDER FILTER</div>
+              <div class="knob-row">
+                <div class="knob-group">
+                  <label>CUTOFF</label>
+                  <div class="rotary-knob"><input type="range" min="0" max="1" step="0.001" value="1" class="filter-cutoff"></div>
+                  <div class="led-display filter-cutoff-display">20.0k</div>
+                </div>
+                <div class="knob-group">
+                  <label>RESO</label>
+                  <div class="rotary-knob"><input type="range" min="0" max="30" step="0.1" value="0" class="filter-res"></div>
+                </div>
+              </div>
+            </div>
+            <div class="sub-section">
+              <div class="section-label">FILTER LFO</div>
+              <div class="knob-row">
+                <div class="knob-group">
+                  <label>RATE</label>
+                  <div class="rotary-knob small"><input type="range" min="0" max="1" step="0.001" value="0.5" class="filter-lfo-rate"></div>
+                  <div class="led-display filter-lfo-rate-display">1.0Hz</div>
+                </div>
+                <div class="knob-group">
+                  <label>DEPTH</label>
+                  <div class="rotary-knob small"><input type="range" min="0" max="10000" step="10" value="0" class="filter-lfo-depth"></div>
+                </div>
+                <div class="knob-group">
+                  <label>SHAPE</label>
+                  <select class="lcd-select filter-lfo-wave">
+                    <option value="sine" selected>SIN</option>
+                    <option value="triangle">TRI</option>
+                    <option value="square">SQR</option>
+                    <option value="sawtooth">SAW</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="sub-section">
+              <div class="section-label">OUTPUT</div>
+              <div class="knob-row">
+                <div class="knob-group">
+                  <label>VOLUME</label>
+                  <div class="rotary-knob"><input type="range" min="0" max="1" step="0.01" value="0.7" class="module-volume"></div>
+                  <div class="led-display module-vol-display">0.70</div>
+                </div>
+                <div class="knob-group">
+                  <label>PAN</label>
+                  <div class="rotary-knob"><input type="range" min="-1" max="1" step="0.01" value="0" class="pan-control"></div>
+                  <div class="led-display pan-display">C</div>
+                </div>
+                <div class="knob-group">
+                  <label>REVERB</label>
+                  <div class="rotary-knob"><input type="range" min="0" max="1" step="0.01" value="0.2" class="reverb-send"></div>
+                  <div class="led-display reverb-send-display">0.20</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="rack-screws right">
+      <div class="screw"></div>
+      <div class="screw"></div>
+    </div>
+  </div>
+</template>
+
+<script src="synth.js"></script>
+</body>
+</html>

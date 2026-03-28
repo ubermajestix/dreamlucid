@@ -1,0 +1,647 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --orange-bright: #FF6A00;
+  --orange-mid: #E85D00;
+  --orange-dark: #CC5200;
+  --orange-glow: #FF8C33;
+  --amber: #FFB800;
+  --amber-dim: #CC9300;
+  --panel-dark: #1A1A1A;
+  --panel-mid: #2A2A2A;
+  --panel-light: #3A3A3A;
+  --panel-highlight: #4A4A4A;
+  --text-bright: #FFDDBB;
+  --text-dim: #AA8866;
+  --led-green: #00FF66;
+  --led-red: #FF3333;
+  --screw-color: #888;
+  --rail-color: #333;
+  --knob-size: 36px;
+}
+
+body {
+  background: #0D0D0D;
+  color: var(--text-bright);
+  font-family: 'Share Tech Mono', monospace;
+  min-height: 100vh;
+  overflow-x: hidden;
+  user-select: none;
+}
+
+#rack {
+  position: relative;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 10px 0;
+  display: flex;
+}
+
+.rack-rail {
+  width: 28px;
+  background: linear-gradient(180deg, #222 0%, #333 50%, #222 100%);
+  border: 1px solid #444;
+  flex-shrink: 0;
+  background-image: repeating-linear-gradient(
+    180deg,
+    transparent 0px,
+    transparent 18px,
+    #444 18px,
+    #444 19px
+  );
+}
+
+#rack-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Rack Unit */
+.rack-unit {
+  display: flex;
+  border: 1px solid #444;
+  margin-bottom: 2px;
+  position: relative;
+  background: var(--panel-dark);
+}
+
+.rack-unit.global {
+  background: linear-gradient(180deg, #1E1E1E 0%, #161616 100%);
+  border-color: var(--orange-bright);
+  box-shadow: 0 0 15px rgba(255, 106, 0, 0.15);
+}
+
+.rack-unit.module {
+  background: linear-gradient(180deg, #1C1C1C 0%, #141414 100%);
+  border-color: #555;
+  transition: border-color 0.3s;
+}
+
+.rack-unit.module:hover {
+  border-color: var(--orange-glow);
+}
+
+.rack-unit.module.powered-off {
+  opacity: 0.5;
+  filter: grayscale(0.5);
+}
+
+.rack-screws {
+  width: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  background: var(--panel-mid);
+  flex-shrink: 0;
+}
+
+.screw {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, #AAA, #555);
+  border: 1px solid #444;
+  position: relative;
+}
+
+.screw::after {
+  content: '+';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 10px;
+  color: #333;
+  font-weight: bold;
+}
+
+.rack-panel {
+  flex: 1;
+  padding: 8px 12px;
+  min-width: 0;
+}
+
+/* Brand Header */
+.brand-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 10px;
+  border-bottom: 2px solid var(--orange-bright);
+  padding-bottom: 6px;
+}
+
+.brand-name {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 900;
+  font-size: 22px;
+  color: var(--orange-bright);
+  text-shadow: 0 0 10px rgba(255, 106, 0, 0.5);
+  letter-spacing: 3px;
+}
+
+.model-name {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--amber);
+  letter-spacing: 2px;
+}
+
+.sub-label {
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  margin-left: auto;
+}
+
+/* Module Header */
+.module-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--orange-dark);
+  padding-bottom: 6px;
+}
+
+.module-title {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--orange-bright);
+  letter-spacing: 2px;
+}
+
+.module-lcd {
+  background: #001a00;
+  border: 1px solid #333;
+  padding: 3px 10px;
+  border-radius: 2px;
+  min-width: 180px;
+  text-align: center;
+  box-shadow: inset 0 0 8px rgba(0, 255, 0, 0.1);
+}
+
+.lcd-text {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  color: var(--led-green);
+  text-shadow: 0 0 6px rgba(0, 255, 102, 0.5);
+}
+
+.power-section {
+  margin-left: auto;
+  display: flex;
+  gap: 6px;
+}
+
+/* Controls */
+.controls-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.section-label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 9px;
+  color: var(--orange-bright);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--panel-highlight);
+  padding-bottom: 2px;
+  margin-bottom: 4px;
+}
+
+.knob-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.knob-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.knob-group label {
+  font-size: 7px;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   ROTARY KNOB (Ableton-style)
+   ============================================================ */
+.rotary-knob {
+  position: relative;
+  width: var(--knob-size);
+  height: var(--knob-size);
+  cursor: pointer;
+}
+
+.rotary-knob .knob-body {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 225deg,
+    var(--panel-highlight) 0deg,
+    var(--panel-highlight) 270deg,
+    transparent 270deg
+  );
+  position: relative;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.6),
+    inset 0 1px 1px rgba(255, 255, 255, 0.05);
+}
+
+.rotary-knob .knob-track {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 225deg,
+    var(--orange-bright) 0deg,
+    var(--orange-bright) 0deg,
+    transparent 0deg
+  );
+  mask: radial-gradient(circle, transparent 40%, black 42%, black 50%, transparent 52%);
+  -webkit-mask: radial-gradient(circle, transparent 40%, black 42%, black 50%, transparent 52%);
+}
+
+.rotary-knob .knob-cap {
+  position: absolute;
+  top: 15%;
+  left: 15%;
+  width: 70%;
+  height: 70%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%,
+    #555 0%,
+    #333 40%,
+    #222 100%
+  );
+  border: 1px solid #555;
+  box-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.08);
+}
+
+.rotary-knob .knob-indicator {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  width: 2px;
+  height: 22%;
+  background: var(--orange-bright);
+  transform-origin: bottom center;
+  border-radius: 1px;
+  box-shadow: 0 0 4px rgba(255, 106, 0, 0.6);
+  pointer-events: none;
+}
+
+.rotary-knob:hover .knob-cap {
+  background: radial-gradient(circle at 40% 35%,
+    #666 0%,
+    #444 40%,
+    #2A2A2A 100%
+  );
+}
+
+.rotary-knob:hover .knob-indicator {
+  box-shadow: 0 0 8px rgba(255, 106, 0, 0.9);
+}
+
+.rotary-knob.small {
+  --knob-size: 28px;
+}
+
+/* Hidden range input inside knob */
+.rotary-knob input[type="range"] {
+  display: none;
+}
+
+/* LED Display */
+.led-display {
+  background: #0a0a0a;
+  border: 1px solid #333;
+  padding: 1px 4px;
+  font-size: 9px;
+  color: var(--led-green);
+  text-shadow: 0 0 4px rgba(0, 255, 102, 0.4);
+  text-align: center;
+  min-width: 40px;
+  border-radius: 2px;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+/* LCD Select */
+.lcd-select {
+  background: #001a00;
+  border: 1px solid #333;
+  color: var(--led-green);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  padding: 3px 6px;
+  text-shadow: 0 0 4px rgba(0, 255, 102, 0.4);
+  cursor: pointer;
+  border-radius: 2px;
+  outline: none;
+  min-width: 60px;
+}
+
+.lcd-select option {
+  background: #001a00;
+  color: var(--led-green);
+}
+
+/* Buttons */
+.rack-btn {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 5px 10px;
+  border: 1px solid;
+  cursor: pointer;
+  border-radius: 3px;
+  text-transform: uppercase;
+  transition: all 0.15s;
+}
+
+.rack-btn:active {
+  transform: scale(0.96);
+}
+
+.add-btn {
+  background: linear-gradient(180deg, var(--orange-bright), var(--orange-dark));
+  border-color: var(--orange-glow);
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  box-shadow: 0 0 8px rgba(255, 106, 0, 0.3);
+}
+
+.add-btn:hover {
+  background: linear-gradient(180deg, var(--orange-glow), var(--orange-bright));
+  box-shadow: 0 0 15px rgba(255, 106, 0, 0.5);
+}
+
+.preset-btn {
+  background: linear-gradient(180deg, var(--panel-light), var(--panel-mid));
+  border-color: var(--amber);
+  color: var(--amber);
+  font-size: 9px;
+}
+
+.preset-btn:hover {
+  background: linear-gradient(180deg, var(--panel-highlight), var(--panel-light));
+  box-shadow: 0 0 8px rgba(255, 184, 0, 0.3);
+}
+
+.record-btn {
+  background: #330000;
+  border-color: var(--led-red);
+  color: var(--led-red);
+}
+
+.record-btn:hover {
+  background: #440000;
+  box-shadow: 0 0 8px rgba(255, 51, 51, 0.4);
+}
+
+.stop-btn {
+  background: var(--panel-mid);
+  border-color: #666;
+  color: var(--text-bright);
+}
+
+.stop-btn:hover:not(:disabled) {
+  background: var(--panel-light);
+}
+
+.stop-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.power-btn {
+  background: #002200;
+  border-color: var(--led-green);
+  color: var(--led-green);
+  font-size: 9px;
+  padding: 3px 8px;
+}
+
+.power-btn.off {
+  background: #220000;
+  border-color: var(--led-red);
+  color: var(--led-red);
+}
+
+.remove-btn {
+  background: #220000;
+  border-color: #663333;
+  color: var(--led-red);
+  font-size: 9px;
+  padding: 3px 8px;
+}
+
+.remove-btn:hover {
+  background: #440000;
+  box-shadow: 0 0 8px rgba(255, 51, 51, 0.3);
+}
+
+.chord-btn {
+  background: linear-gradient(180deg, var(--amber), var(--amber-dim));
+  border-color: var(--amber);
+  color: #1a1a00;
+  min-width: 70px;
+  font-size: 9px;
+}
+
+.chord-btn:hover {
+  box-shadow: 0 0 10px rgba(255, 184, 0, 0.4);
+}
+
+.oct-shift-btn {
+  background: var(--panel-mid);
+  border-color: var(--orange-dark);
+  color: var(--orange-bright);
+  font-size: 12px;
+  padding: 2px 8px;
+  min-width: 28px;
+}
+
+.oct-shift-btn:hover {
+  background: var(--panel-light);
+}
+
+/* Recording indicator */
+.rec-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #333;
+  align-self: center;
+}
+
+.rec-indicator.recording {
+  background: var(--led-red);
+  box-shadow: 0 0 10px var(--led-red);
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Oscillator Grid */
+.osc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.osc-channel {
+  background: var(--panel-mid);
+  border: 1px solid var(--panel-highlight);
+  border-radius: 3px;
+  padding: 5px 3px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.osc-label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  color: var(--orange-bright);
+  letter-spacing: 1px;
+}
+
+.osc-knobs-row {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.osc-sub-label {
+  font-size: 7px;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+  margin-top: 2px;
+  border-top: 1px solid var(--panel-highlight);
+  padding-top: 2px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Bottom Controls Row */
+.controls-row-bottom {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.sub-section {
+  flex: 1;
+  min-width: 140px;
+}
+
+/* Transport section */
+.transport {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.button-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+/* Reverb section styling */
+.reverb-section {
+  flex: 1;
+}
+
+.master-vol {
+  align-items: center;
+}
+
+/* Module body */
+.module-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Scale section */
+.scale-section .knob-row {
+  align-items: center;
+}
+
+.oct-shift-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.oct-shift-display {
+  min-width: 24px;
+  text-align: center;
+}
+
+/* Hidden file input */
+#preset-file-input {
+  display: none;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .osc-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .controls-row {
+    flex-direction: column;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0D0D0D;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--panel-highlight);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--orange-dark);
+}

@@ -1,0 +1,130 @@
+{
+  "version": 2,
+  "global": {
+    "masterVolume": 0.5,
+    "filterCutoff": 0.631,
+    "filterRes": 5.9,
+    "reverbAlgorithm": "bloom",
+    "reverbDecay": 13.2,
+    "reverbDamping": 0.15,
+    "reverbPredelay": 34,
+    "reverbMix": 1,
+    "reverbMod": 0.2
+  },
+  "modules": [
+    {
+      "root": "0",
+      "octave": "4",
+      "scale": "major",
+      "chordIndex": 0,
+      "octaveShift": -2,
+      "powered": true,
+      "oscillators": [
+        {
+          "pitch": 0,
+          "fine": 0,
+          "level": 0.7,
+          "wave": "sawtooth",
+          "pan": 0,
+          "lfoRate": 4,
+          "lfoDepth": 0.71
+        },
+        {
+          "pitch": 0,
+          "fine": 4,
+          "level": 0.7,
+          "wave": "sawtooth",
+          "pan": -1,
+          "lfoRate": 4,
+          "lfoDepth": 0.11
+        },
+        {
+          "pitch": 0,
+          "fine": -8,
+          "level": 0.7,
+          "wave": "sawtooth",
+          "pan": 1,
+          "lfoRate": 4,
+          "lfoDepth": 0.11
+        },
+        {
+          "pitch": 0,
+          "fine": 2,
+          "level": 0.7,
+          "wave": "sawtooth",
+          "pan": 0,
+          "lfoRate": 4,
+          "lfoDepth": 0.6
+        }
+      ],
+      "lfoRate": 11.5,
+      "lfoDepth": 0.29,
+      "lfoWave": "sine",
+      "filterCutoff": 0.641,
+      "filterRes": 6.2,
+      "filterLfoRate": 0.034,
+      "filterLfoDepth": 3500,
+      "filterLfoWave": "sine",
+      "moduleVolume": 0.54,
+      "pan": -0.01,
+      "reverbSend": 0.31
+    },
+    {
+      "root": "7",
+      "octave": "4",
+      "scale": "major",
+      "chordIndex": 0,
+      "octaveShift": -1,
+      "powered": true,
+      "oscillators": [
+        {
+          "pitch": 0,
+          "fine": 0,
+          "level": 0.7,
+          "wave": "sawtooth",
+          "pan": -0.16,
+          "lfoRate": 4,
+          "lfoDepth": 0.36
+        },
+        {
+          "pitch": 0,
+          "fine": 0,
+          "level": 0.7,
+          "wave": "sawtooth",
+          "pan": 1,
+          "lfoRate": 2.2,
+          "lfoDepth": 0.73
+        },
+        {
+          "pitch": 0,
+          "fine": 0,
+          "level": 0.7,
+          "wave": "sawtooth",
+          "pan": -1,
+          "lfoRate": 3.4,
+          "lfoDepth": 0.69
+        },
+        {
+          "pitch": 0,
+          "fine": 0,
+          "level": 0.7,
+          "wave": "sawtooth",
+          "pan": 0.12,
+          "lfoRate": 1.8,
+          "lfoDepth": 0.73
+        }
+      ],
+      "lfoRate": 10.5,
+      "lfoDepth": 0,
+      "lfoWave": "sine",
+      "filterCutoff": 0.591,
+      "filterRes": 5.1,
+      "filterLfoRate": 0.158,
+      "filterLfoDepth": 7080,
+      "filterLfoWave": "sine",
+      "moduleVolume": 0.48,
+      "pan": 0,
+      "reverbSend": 0.43
+    }
+  ]
+}
